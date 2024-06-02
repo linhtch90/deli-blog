@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const ASSOCIATION_POSTS = "Posts"
+
 type UserPersistance struct {
 	db *gorm.DB
 }
@@ -38,4 +40,16 @@ func (userPersistence *UserPersistance) Create(user *model.User) error {
 
 func (userPersistance *UserPersistance) Update(user *model.User) error {
 	return userPersistance.db.Model(user).Updates(user).Error
+}
+
+func (userPersistance *UserPersistance) GetAllPosts(user *model.User) (*[]model.Post, error) {
+	var posts []model.Post
+	if error := userPersistance.db.Model(user).Association(ASSOCIATION_POSTS).Find(&posts); error != nil {
+		return nil, error
+	}
+	return &posts, nil
+}
+
+func (userPersistance *UserPersistance) AddPost(user *model.User, post *model.Post) error {
+	return userPersistance.db.Model(user).Association(ASSOCIATION_POSTS).Append(post)
 }
