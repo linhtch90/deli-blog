@@ -13,6 +13,8 @@ func main() {
 	e := echo.New()
 
 	db := dbConnection.New()
+
+	dbConnection.MigrateBreakingAddress(db)
 	dbConnection.AutoMigrate(db)
 
 	userPersistance := persistance.NewUserPersistance(db)

@@ -25,3 +25,14 @@ func AutoMigrate(db *gorm.DB) {
 		&model.Post{},
 	)
 }
+
+func MigrateBreakingAddress(db *gorm.DB) {
+	if db.Migrator().HasTable(&model.User{}) {
+		db.Transaction(func(tx *gorm.DB) error {
+			if err := db.Model(&model.User{}).Where("address IS NULL").Update("address", "None").Error; err != nil {
+				return err
+			}
+			return nil
+		})
+	}
+}
