@@ -11,9 +11,6 @@ import (
 
 func main() {
 	e := echo.New()
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
 
 	db := dbConnection.New()
 	dbConnection.AutoMigrate(db)
@@ -24,6 +21,10 @@ func main() {
 
 	apiVersion := e.Group("api/v1")
 	service.RegisterController(apiVersion)
+
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
 
 	e.Logger.Fatal(e.Start(":12000"))
 }
